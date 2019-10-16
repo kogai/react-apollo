@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { DocumentNode } from 'graphql';
 import gql from 'graphql-tag';
 import { MockedProvider, mockSingleLink } from '@apollo/react-testing';
-import { render, cleanup, wait } from '@testing-library/react';
-import { ApolloProvider, useMutation } from '@apollo/react-hooks';
+import { render, cleanup, wait, act } from '@testing-library/react';
+import { ApolloProvider, useMutation, ActContext } from '@apollo/react-hooks';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
@@ -79,7 +79,9 @@ describe('useMutation Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -136,7 +138,9 @@ describe('useMutation Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -189,7 +193,9 @@ describe('useMutation Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -232,7 +238,9 @@ describe('useMutation Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -247,7 +255,9 @@ describe('useMutation Hook', () => {
 
       render(
         <MockedProvider>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
 
@@ -324,7 +334,9 @@ describe('useMutation Hook', () => {
 
       render(
         <ApolloProvider client={client}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </ApolloProvider>
       );
     });

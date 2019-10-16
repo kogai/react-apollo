@@ -4,6 +4,7 @@ import { DocumentNode } from 'graphql';
 
 import { MutationHookOptions, MutationTuple } from './types';
 import { MutationData } from './data/MutationData';
+import { ActContext } from './utils/actContext';
 
 export function useMutation<TData = any, TVariables = OperationVariables>(
   mutation: DocumentNode,
@@ -12,6 +13,7 @@ export function useMutation<TData = any, TVariables = OperationVariables>(
   const context = useContext(getApolloContext());
   const [result, setResult] = useState({ called: false, loading: false });
   const updatedOptions = options ? { ...options, mutation } : { mutation };
+  const act = useContext(ActContext);
 
   const mutationDataRef = useRef<MutationData<TData, TVariables>>();
   function getMutationDataRef() {
@@ -20,7 +22,11 @@ export function useMutation<TData = any, TVariables = OperationVariables>(
         options: updatedOptions,
         context,
         result,
-        setResult
+        setResult: (next: typeof result) => {
+          act(() => {
+            setResult(next);
+          });
+        }
       });
     }
     return mutationDataRef.current;

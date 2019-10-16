@@ -4,12 +4,14 @@ import { getApolloContext, OperationVariables } from '@apollo/react-common';
 
 import { SubscriptionHookOptions } from './types';
 import { SubscriptionData } from './data/SubscriptionData';
+import { ActContext } from './utils/actContext';
 
 export function useSubscription<TData = any, TVariables = OperationVariables>(
   subscription: DocumentNode,
   options?: SubscriptionHookOptions<TData, TVariables>
 ) {
   const context = useContext(getApolloContext());
+  const act = useContext(ActContext);
   const updatedOptions = options
     ? { ...options, subscription }
     : { subscription };
@@ -25,7 +27,11 @@ export function useSubscription<TData = any, TVariables = OperationVariables>(
       subscriptionDataRef.current = new SubscriptionData<TData, TVariables>({
         options: updatedOptions,
         context,
-        setResult
+        setResult: (next: typeof result) => {
+          act(() => {
+            setResult(next);
+          });
+        }
       });
     }
     return subscriptionDataRef.current;

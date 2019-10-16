@@ -3,9 +3,9 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache as Cache } from 'apollo-cache-inmemory';
 import { ApolloProvider } from '@apollo/react-common';
 import { MockSubscriptionLink } from '@apollo/react-testing';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, act } from '@testing-library/react';
 import gql from 'graphql-tag';
-import { useSubscription } from '@apollo/react-hooks';
+import { useSubscription, ActContext } from '@apollo/react-hooks';
 
 describe('useSubscription Hook', () => {
   afterEach(cleanup);
@@ -67,7 +67,9 @@ describe('useSubscription Hook', () => {
 
     render(
       <ApolloProvider client={client}>
-        <Component />
+        <ActContext.Provider value={act}>
+          <Component />
+        </ActContext.Provider>
       </ApolloProvider>
     );
   });
@@ -137,7 +139,9 @@ describe('useSubscription Hook', () => {
 
     unmount = render(
       <ApolloProvider client={client}>
-        <Component />
+        <ActContext.Provider value={act}>
+          <Component />
+        </ActContext.Provider>
       </ApolloProvider>
     ).unmount;
   });
@@ -190,7 +194,9 @@ describe('useSubscription Hook', () => {
 
     unmount = render(
       <ApolloProvider client={client}>
-        <Component />
+        <ActContext.Provider value={act}>
+          <Component />
+        </ActContext.Provider>
       </ApolloProvider>
     ).unmount;
   });
@@ -233,7 +239,9 @@ describe('useSubscription Hook', () => {
           expect(loading).toBe(false);
           expect(error).toBeUndefined();
           expect(data).toBeUndefined();
-          setSkip(false);
+          act(() => {
+            setSkip(false);
+          });
           break;
         case 1:
           expect(loading).toBe(true);
@@ -244,20 +252,26 @@ describe('useSubscription Hook', () => {
         case 2:
           expect(loading).toBe(false);
           expect(data).toEqual(results[0].result.data);
-          setSkip(true);
+          act(() => {
+            setSkip(true);
+          });
           break;
         case 3:
           expect(loading).toBe(false);
           expect(data).toBeUndefined();
           expect(error).toBeUndefined();
           // ensure state persists across rerenders
-          triggerRerender(i => i + 1);
+          act(() => {
+            triggerRerender(i => i + 1);
+          });
           break;
         case 4:
           expect(loading).toBe(false);
           expect(data).toBeUndefined();
           expect(error).toBeUndefined();
-          setSkip(false);
+          act(() => {
+            setSkip(false);
+          });
           break;
         case 5:
           expect(loading).toBe(true);
@@ -285,7 +299,9 @@ describe('useSubscription Hook', () => {
 
     unmount = render(
       <ApolloProvider client={client}>
-        <Component />
+        <ActContext.Provider value={act}>
+          <Component />
+        </ActContext.Provider>
       </ApolloProvider>
     ).unmount;
   });
