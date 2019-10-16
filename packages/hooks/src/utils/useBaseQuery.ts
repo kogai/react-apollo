@@ -9,6 +9,7 @@ import { DocumentNode } from 'graphql';
 import { QueryHookOptions, QueryOptions, QueryTuple } from '../types';
 import { QueryData } from '../data/QueryData';
 import { useDeepMemo } from './useDeepMemo';
+import { ActContext } from './actContext';
 
 export function useBaseQuery<TData = any, TVariables = OperationVariables>(
   query: DocumentNode,
@@ -18,6 +19,7 @@ export function useBaseQuery<TData = any, TVariables = OperationVariables>(
   const context = useContext(getApolloContext());
   const [tick, forceUpdate] = useReducer(x => x + 1, 0);
   const updatedOptions = options ? { ...options, query } : { query };
+  const act = useContext(ActContext);
 
   const queryDataRef = useRef<QueryData<TData, TVariables>>();
 
@@ -25,7 +27,11 @@ export function useBaseQuery<TData = any, TVariables = OperationVariables>(
     queryDataRef.current = new QueryData<TData, TVariables>({
       options: updatedOptions as QueryOptions<TData, TVariables>,
       context,
-      forceUpdate
+      forceUpdate: (next: typeof tick) => {
+        act(() => {
+          forceUpdate(next);
+        });
+      }
     });
   }
 

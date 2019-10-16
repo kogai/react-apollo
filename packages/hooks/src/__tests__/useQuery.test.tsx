@@ -2,8 +2,8 @@ import React, { useState, useReducer } from 'react';
 import { DocumentNode, GraphQLError } from 'graphql';
 import gql from 'graphql-tag';
 import { MockedProvider, MockLink } from '@apollo/react-testing';
-import { render, cleanup, wait } from '@testing-library/react';
-import { useQuery, ApolloProvider } from '@apollo/react-hooks';
+import { render, cleanup, wait, act } from '@testing-library/react';
+import { useQuery, ApolloProvider, ActContext } from '@apollo/react-hooks';
 import { ApolloClient } from 'apollo-client';
 import { ApolloLink, Observable } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
@@ -54,7 +54,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={CAR_MOCKS}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -73,7 +75,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={CAR_MOCKS}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -115,7 +119,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={CAR_MOCKS}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
 
@@ -158,7 +164,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={CAR_MOCKS}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -183,7 +191,7 @@ describe('useQuery Hook', () => {
           case 2:
             expect(loading).toBeFalsy();
             expect(data).toEqual(CAR_RESULT_DATA);
-            setShouldSkip(true);
+            act(() => setShouldSkip(true));
             break;
           case 3:
             expect(loading).toBeFalsy();
@@ -204,7 +212,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={CAR_MOCKS}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -238,7 +248,12 @@ describe('useQuery Hook', () => {
 
       const Component = () => {
         const [queryMounted, setQueryMounted] = useState(true);
-        const unmount = () => setTimeout(() => setQueryMounted(false), 0);
+        const unmount = () =>
+          setTimeout(() => {
+            act(() => {
+              setQueryMounted(false);
+            });
+          }, 0);
         if (!queryMounted)
           setTimeout(() => {
             expect(linkRequestSpy).toHaveBeenCalledTimes(2);
@@ -249,7 +264,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={CAR_MOCKS} link={mockLink}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -285,7 +302,9 @@ describe('useQuery Hook', () => {
 
         unmount = render(
           <MockedProvider mocks={CAR_MOCKS}>
-            <Component />
+            <ActContext.Provider value={act}>
+              <Component />
+            </ActContext.Provider>
           </MockedProvider>
         ).unmount;
 
@@ -305,7 +324,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={CAR_MOCKS}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -342,7 +363,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -417,7 +440,9 @@ describe('useQuery Hook', () => {
 
       render(
         <ApolloProvider client={client}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </ApolloProvider>
       );
     });
@@ -454,7 +479,9 @@ describe('useQuery Hook', () => {
             expect(error).toBeDefined();
             expect(error!.message).toEqual('GraphQL error: forced error');
             setTimeout(() => {
-              forceUpdate(0);
+              act(() => {
+                forceUpdate(0);
+              });
             });
             break;
           case 2:
@@ -471,7 +498,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <App />
+          <ActContext.Provider value={act}>
+            <App />
+          </ActContext.Provider>
         </MockedProvider>
       );
     });
@@ -514,7 +543,9 @@ describe('useQuery Hook', () => {
               expect(error).toBeDefined();
               expect(error!.message).toEqual('GraphQL error: forced error');
               setTimeout(() => {
-                forceUpdate(0);
+                act(() => {
+                  forceUpdate(0);
+                });
               });
               break;
             case 2:
@@ -530,7 +561,9 @@ describe('useQuery Hook', () => {
 
         render(
           <MockedProvider mocks={mocks}>
-            <App />
+            <ActContext.Provider value={act}>
+              <App />
+            </ActContext.Provider>
           </MockedProvider>
         );
 
@@ -601,7 +634,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <App />
+          <ActContext.Provider value={act}>
+            <App />
+          </ActContext.Provider>
         </MockedProvider>
       );
 
@@ -671,7 +706,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <App />
+          <ActContext.Provider value={act}>
+            <App />
+          </ActContext.Provider>
         </MockedProvider>
       );
 
@@ -751,7 +788,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <App />
+          <ActContext.Provider value={act}>
+            <App />
+          </ActContext.Provider>
         </MockedProvider>
       );
 
@@ -859,7 +898,9 @@ describe('useQuery Hook', () => {
 
         render(
           <MockedProvider mocks={mocks}>
-            <App />
+            <ActContext.Provider value={act}>
+              <App />
+            </ActContext.Provider>
           </MockedProvider>
         );
 
@@ -958,7 +999,9 @@ describe('useQuery Hook', () => {
 
         render(
           <MockedProvider mocks={mocks}>
-            <App />
+            <ActContext.Provider value={act}>
+              <App />
+            </ActContext.Provider>
           </MockedProvider>
         );
 
@@ -1061,7 +1104,9 @@ describe('useQuery Hook', () => {
 
       render(
         <MockedProvider mocks={mocks}>
-          <App />
+          <ActContext.Provider value={act}>
+            <App />
+          </ActContext.Provider>
         </MockedProvider>
       );
 
@@ -1105,7 +1150,9 @@ describe('useQuery Hook', () => {
 
         render(
           <ApolloProvider client={client}>
-            <Component />
+            <ActContext.Provider value={act}>
+              <Component />
+            </ActContext.Provider>
           </ApolloProvider>
         );
 
@@ -1143,7 +1190,9 @@ describe('useQuery Hook', () => {
 
       render(
         <ApolloProvider client={client}>
-          <Component />
+          <ActContext.Provider value={act}>
+            <Component />
+          </ActContext.Provider>
         </ApolloProvider>
       );
 

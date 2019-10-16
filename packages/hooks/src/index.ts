@@ -12,5 +12,6 @@ export { useSubscription } from './useSubscription';
 export { useApolloClient } from './useApolloClient';
 
 export { RenderPromises } from './ssr/RenderPromises';
+export { ActContext } from './utils/actContext';
 
 export * from './types';
